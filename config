@@ -94,7 +94,7 @@ input "type:keyboard" {
     # bindsym $mod+Return exec $term
     # Start a new app in new workspace
     bindsym $mod+d exec /home/pc/.config/sway/app_launcher.sh
-    bindsym f1 exec /home/pc/.config/sway/temp_script.sh
+    # bindsym f1 exec /home/pc/.config/sway/temp_script.sh
     # bindsym f13 exec kitty
 
     # bindsym F13 exec notify-send "F13 pressed"

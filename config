@@ -4,6 +4,12 @@
 #
 # Read `man 5 sway` for a complete reference.
 
+# My readme
+# Some keybindings use bindcode (generaly, I want transfer all keybinds to bindcode, because often we need more languages then one)
+# For getting keybind for wayland you need to use wev (alert!!! need wev!!! because x... utility for x11)
+
+output * resolution 2560x1440 
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -14,13 +20,38 @@ set $down j
 set $up k
 set $right l
 
-# Renaming and activation of workspaces
-exec --no-startup-id swaymsg workspace term && kitty -e tmux &
-exec --no-startup-id swaymsg workspace web && google-chrome-stable &
-exec --no-startup-id swaymsg workspace postman && postman &
-exec --no-startup-id swaymsg workspace navicat && navicat &
-exec --no-startup-id swaymsg workspace mail && thunderbird &
-exec --no-startup-id swaymsg workspace tg && telegram-desktop &
+
+set $ws1 "1: term"
+set $ws2 "2: web"
+set $ws3 "3: tg"
+set $ws4 "4: postman"
+set $ws5 "5: navicat"
+set $ws6 "6: mail"
+set $ws7 "7: godot"
+set $ws8 "8"
+set $ws9 "9"
+
+workspace $ws1
+workspace $ws2
+workspace $ws3
+workspace $ws4
+workspace $ws5
+workspace $ws6
+workspace $ws7
+workspace $ws8
+workspace $ws9
+
+# How to add one app to workspace:
+# 1) You need exec in terminal: swaymsg -t get_tree | jq -r
+# 2) Found in this trash app name
+# 3) Check what you can copy and apply to 'assign', it's can be class (in assign - class), app_id (the same in assign)
+assign [app_id="kitty"] workspace $ws1
+assign [app_id="zen-beta"] workspace $ws2 
+assign [app_id="org.telegram.desktop"] workspace $ws3
+# assign [class="Google-chrome"] workspace $ws2 
+assign [class="Postman"] workspace $ws4
+assign [instance="AppRun"] workspace $ws5
+assign [app_id="thunderbird"] workspace $ws6
 
 
 # Your preferred terminal emulator
@@ -29,6 +60,8 @@ exec --no-startup-id swaymsg workspace tg && telegram-desktop &
 # set $menu wmenu-run
 
 exec waybar
+#exec telegram-desktop
+#exec postman
 
 ### Output configuration
 #
@@ -47,7 +80,7 @@ exec waybar
 #
 
 
-exec swayidle -w timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
+exec swayidle -w timeout 300 'playerctl status | awk "/Playing/ {exit 0} {exit 1}" || swaymsg "output * power off"' resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
 
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
@@ -79,11 +112,6 @@ input "type:keyboard" {
     repeat_rate 40
 }
 
-# set $ws1 "1: term"
-# set $ws2 "2: web"
-# set $ws3 "3: postman"
-# set $ws4 "4: navicat"
-# set $ws5 "5: extra"
 
 ### Key bindings
 #
@@ -91,17 +119,17 @@ input "type:keyboard" {
 #
     # Start a terminal
     bindsym $mod+Return exec kitty -e tmux
-    # bindsym $mod+Return exec $term
+
     # Start a new app in new workspace
-    bindsym $mod+d exec /home/pc/.config/sway/app_launcher.sh
-    # bindsym f1 exec /home/pc/.config/sway/temp_script.sh
-    # bindsym f13 exec kitty
+    # d - 40
+    bindcode $mod+40 exec bemenu-run --prompt "Start App:"
 
     # bindsym F13 exec notify-send "F13 pressed"
     # bindcode 183 exec notify-send "F13 pressed"
 
     # Kill focused window
-    bindsym $mod+Shift+q kill
+    # q - 24
+    bindcode $mod+Shift+24 kill
 
     # Start your launcher
     # bindsym $mod+d exec $menu
@@ -113,10 +141,23 @@ input "type:keyboard" {
     # mouse button for dragging.
 
     # Reload the configuration file
-    bindsym $mod+Shift+c reload
+    # c - 54
+    bindcode $mod+Shift+54 reload
 
     # Exit sway (logs you out of your Wayland session)
     # bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    # sleep without locking, for locking use swayidle
+    bindcode 191 exec ~/.config/sway/sleep_script.sh
+
+    # screenshoting with instantly edit
+    # 107 - PrintScreen
+    bindcode 107 exec grim -g "$(slurp)" - | swappy -f -
+    bindcode Shift+107 exec ~/.config/sway/screen_recording.sh
+    # clear all notification
+    # 57 - n
+    # bindcode $mod+Shift+57 exec notify-send "sex"
+    bindcode $mod+Shift+57 exec makoctl dismiss --all
 #
 # Moving around:
 #
@@ -136,6 +177,7 @@ input "type:keyboard" {
     bindsym $mod+Shift+$down move down
     bindsym $mod+Shift+$up move up
     bindsym $mod+Shift+$right move right
+
     # Ditto, with arrow keys
     bindsym $mod+Shift+Left move left
     bindsym $mod+Shift+Down move down
@@ -144,39 +186,33 @@ input "type:keyboard" {
 #
 # Workspaces:
 #
+    # Return to previous workspace
+    # 52 - z
+    bindcode $mod+52 workspace back_and_forth
     # Switch to workspace
-    # bindsym $mod+1 workspace number 1
-    # bindsym $mod+2 workspace number 2
-    # bindsym $mod+3 workspace number 3
-    # bindsym $mod+4 workspace number 4
-    # bindsym $mod+5 workspace number 5
-    # bindsym $mod+6 workspace number 6
-    # bindsym $mod+7 workspace number 7
-    # bindsym $mod+8 workspace number 8
-    # bindsym $mod+9 workspace number 9
-    # bindsym $mod+0 workspace number 10
-    bindsym $mod+1 exec /home/pc/.config/sway/switch_workspace_by_number.sh 1
-    bindsym $mod+2 exec /home/pc/.config/sway/switch_workspace_by_number.sh 2
-    bindsym $mod+3 exec /home/pc/.config/sway/switch_workspace_by_number.sh 3
-    bindsym $mod+4 exec /home/pc/.config/sway/switch_workspace_by_number.sh 4
-    bindsym $mod+5 exec /home/pc/.config/sway/switch_workspace_by_number.sh 5
-    bindsym $mod+6 exec /home/pc/.config/sway/switch_workspace_by_number.sh 6
-    bindsym $mod+7 exec /home/pc/.config/sway/switch_workspace_by_number.sh 7
-    bindsym $mod+8 exec /home/pc/.config/sway/switch_workspace_by_number.sh 8
-    bindsym $mod+9 exec /home/pc/.config/sway/switch_workspace_by_number.sh 9
-    bindsym $mod+0 exec /home/pc/.config/sway/switch_workspace_by_number.sh 10
+    bindsym $mod+1 workspace $ws1
+    bindsym $mod+2 workspace $ws2
+    bindsym $mod+3 workspace $ws3
+    bindsym $mod+4 workspace $ws4
+    bindsym $mod+5 workspace $ws5
+    bindsym $mod+Ctrl+1 workspace $ws6
+    bindsym $mod+Ctrl+2 workspace $ws7
+    bindsym $mod+Ctrl+3 workspace $ws8
+    bindsym $mod+Ctrl+4 workspace $ws9
+    bindsym $mod+Ctrl+5 workspace $ws10
 
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
+    # bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+Ctrl+1 move container to workspace $ws6
+    bindsym $mod+Shift+Ctrl+2 move container to workspace $ws7
+    bindsym $mod+Shift+Ctrl+3 move container to workspace $ws8
+    bindsym $mod+Shift+Ctrl+4 move container to workspace $ws9
+    bindsym $mod+Shift+Ctrl+5 move container to workspace $ws10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 #
@@ -185,8 +221,8 @@ input "type:keyboard" {
     # You can "split" the current object of your focus with
     # # $mod+b or $mod+v, for horizontal and vertical splits
     # # respectively.
-    # bindsym $mod+b splith
-    # bindsym $mod+v splitv
+    # bindsym $mod+Shift+b splith
+    # bindsym $mod+Shift+v splitv
     #
     # # Switch the current container between different layout styles
     # bindsym $mod+s layout stacking
@@ -243,16 +279,24 @@ input "type:keyboard" {
 #
 # Utilities:
 #
+    bindsym --locked XF86Calculator exec qalculate-gtk
+
     # Special keys to adjust volume via PulseAudio
+    bindsym --locked XF86AudioPlay exec playerctl play-pause
+    bindsym --locked XF86AudioPause exec playerctl play-pause
+    bindsym --locked XF86AudioNext exec playerctl next
+    bindsym --locked XF86AudioPrev exec playerctl previous
+
     bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
     bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
     bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
     bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
     # Special keys to adjust brightness via brightnessctl
-    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    #bindsym --locked XF86AudioNext exec brightnessctl set 5%-
+    #bindsym --locked XF86AudioPrev exec brightnessctl set 5%+
+    # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+    # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    # bindsym Print exec grim
 
 #
 # Status Bar:
@@ -272,6 +316,27 @@ input "type:keyboard" {
 #     }
 # }
 
-include /etc/sway/config.d/*
+set $BROWSER zen
 
+exec postman
+exec navicat
+exec telegram-desktop
+exec zen
+exec kitty -e tmux
+# need for startup bluethooth gui, if something will be wrong, comment this line
+exec GDK_BACKEND=x11 blueman-applet &
+exec thunderbird
+#exec steam
+exec mako
+
+exec env QT_QPA_PLATFORMTHEME=qt5ct
+
+set $power_menu exec swaynag -t warning -m "Power Menu" \
+    -b "Shutdown" "systemctl poweroff" \
+    -b "Reboot" "systemctl reboot"
+
+# seat seat0 xcursor_theme Adwaita 24
+# exec swaylock
+
+include /etc/sway/config.d/*
 

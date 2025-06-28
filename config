@@ -27,7 +27,7 @@ set $ws1 "1: term"
 set $ws2 "2: web"
 set $ws3 "3: tg"
 set $ws4 "4: postman"
-set $ws5 "5: navicat"
+set $ws5 "5: db"
 set $ws6 "6: mail"
 set $ws7 "7: godot"
 set $ws8 "8: steam"
@@ -48,11 +48,12 @@ workspace $ws9
 # 2) Found in this trash app name
 # 3) Check what you can copy and apply to 'assign', it's can be class (in assign - class), app_id (the same in assign)
 assign [app_id="foot"] workspace $ws1
-assign [app_id="zen"] workspace $ws2 
+assign [app_id="firefox"] workspace $ws2 
 assign [app_id="org.telegram.desktop"] workspace $ws3
 assign [class="Postman"] workspace $ws4
-assign [instance="AppRun"] workspace $ws5
-assign [app_id="thunderbird"] workspace $ws6
+# assign [instance="AppRun"] workspace $ws5 # it was navicat
+assign [app_id="DBeaver"] workspace $ws5
+assign [instance="bluemail"] workspace $ws6
 assign [app_id="org.godotengine.ProjectManager"] workspace $ws7
 assign [class="steam"] workspace $ws8
 
@@ -313,22 +314,17 @@ input "type:keyboard" {
 # }
 
 exec "until pgrep -x sway-session; do sleep 0.1; done; sleep 0.5 && mako"
-# exec "until pgrep -x sway-session; do sleep 0.1; done; sleep 0.5 && swayidle -w timeout 300 'swaymsg \"output * power off\"' resume 'swaymsg \"output * power on\"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'"
-# exec swayidle -w timeout 300 'swaylock -f -c 000000' timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep 'swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
-# exec swayidle -w timeout 10 'swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000' timeout 100 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' before-sleep 'swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
-# exec swayidle -w timeout 300  swaymsg "output * power off"' resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
-# exec swayidle -w timeout 300 swaymsg "output * power off" resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
 exec swayidle -w timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
-# exec swayidle -w timeout 300 'playerctl status | awk "/Playing/ {exit 0} {exit 1}" || swaymsg "output * power off"' resume 'swaymsg "output * power on"; swaylock --key-hl-color 00ff00 --bs-hl-color ff0000 --inside-color 00000088 -c 000000'
 
 exec --no-startup-id /home/pc/Applications/Postman/Postman
-exec --no-startup-id /home/pc/Applications/navicat
-exec --no-startup-id telegram-desktop
-exec --no-startup-id /home/pc/Applications/zen
+# exec --no-startup-id /home/pc/Applications/navicat
+exec --no-startup-id dbeaver
+exec --no-startup-id Telegram
+exec --no-startup-id firefox
 exec foot tmux
 # need for startup bluethooth gui, if something will be wrong, comment this line
 exec GDK_BACKEND=x11 blueman-applet
-exec --no-startup-id thunderbird
+exec --no-startup-id bluemail
 exec --no-startup-id 'steam steam://rungameid/404790'
 #seat seat0 xclipboard enable
 
